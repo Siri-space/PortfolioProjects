@@ -174,15 +174,13 @@ RollingPeopleVaccinated numeric
 )
 
 Insert into #PercentPopulationVaccinated
-Select dea.continent, dea.location, dea.date, dea.population, vac.new_vaccinations
-, SUM(CONVERT(int,vac.new_vaccinations)) OVER (Partition by dea.Location Order by dea.location, dea.Date) as RollingPeopleVaccinated
+Select d.continent, d.location, d.date, d.population, v.new_vaccinations
+, SUM(CONVERT(int,v.new_vaccinations)) OVER (Partition by d.Location Order by d.location, d.Date) as RollingPeopleVaccinated
 --, (RollingPeopleVaccinated/population)*100
-From CovidDeaths$ dea
-Join CovidVaccinations$ vac
-	On dea.location = vac.location
-	and dea.date = vac.date
---where dea.continent is not null 
---order by 2,3
+From CovidDeaths$ d
+Join CovidVaccinations$ v
+	On d.location = v.location
+	and d.date = v.date
 
 SELECT *, (RollingPeopleVaccinated / Population) * 100 as "% of People Vaccinated"
 FROM #PercentPopulationVaccinated
@@ -194,14 +192,13 @@ CREATE VIEW PercentPopulationVaccinated
 
 AS 
 
-Select dea.continent, dea.location, dea.date, dea.population, vac.new_vaccinations
-, SUM(CONVERT(int,vac.new_vaccinations)) OVER (Partition by dea.Location Order by dea.location, dea.Date) as RollingPeopleVaccinated
+Select d.continent, d.location, d.date, d.population, v.new_vaccinations
+, SUM(CONVERT(int,v.new_vaccinations)) OVER (Partition by d.Location Order by d.location, d.Date) as RollingPeopleVaccinated
 --, (RollingPeopleVaccinated/population)*100
-From CovidDeaths$ dea
-Join CovidVaccinations$ vac
-	On dea.location = vac.location
-	and dea.date = vac.date
---where dea.continent is not null 
---order by 2,3
+From CovidDeaths$ d
+Join CovidVaccinations$ v
+	On d.location = v.location
+	and d.date = v.date
+
 
 SELECT * FROM PercentPopulationVaccinated
